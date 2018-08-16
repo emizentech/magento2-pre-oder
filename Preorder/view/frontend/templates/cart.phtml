@@ -1,0 +1,72 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var \Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Cart $block */
+
+/** @var \Magento\Wishlist\Model\Item $item */
+$item = $block->getItem();
+$product = $item->getProduct();
+?>
+<?php
+$_getPreorder = $product->getResource()->getAttribute('preorder');
+$attrPreorderValue = $_getPreorder->getFrontend()->getValue($product);
+/**Get preorder and current date*/
+$_ct= new Zend_Date($product->getavailability_date()); 
+$currentDate = (new \DateTime());
+$cdate = strtotime($currentDate->format('Y-m-d'));
+$availdate = strtotime($_ct->toString('Y-MM-dd'));
+/****/
+/**Get Product Quantity*/
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$StockState = $objectManager->get('\Magento\CatalogInventory\Api\StockStateInterface');
+$stockQty = $StockState->getStockQty($product->getId(), $product->getStore()->getWebsiteId());
+/***/
+?>
+<?php foreach ($block->getChildNames() as $childName): ?>
+    <?= /* @noEscape */ $block->getLayout()->renderElement($childName, false) ?>
+<?php endforeach;?>
+<div class="box-tocart">
+    <fieldset class="fieldset">
+    <?php if ($item->canHaveQty() && $product->isVisibleInSiteVisibility()): ?>
+        <div class="field qty">
+            <label class="label" for="qty[<?= $block->escapeHtmlAttr($item->getId()) ?>]"><span><?= $block->escapeHtml(__('Qty')) ?></span></label>
+            <div class="control">
+                <input type="number" data-role="qty" id="qty[<?= $block->escapeHtmlAttr($item->getId()) ?>]" class="input-text qty" data-validate="{'required-number':true,'validate-greater-than-zero':true}"
+               name="qty[<?= $block->escapeHtmlAttr($item->getId()) ?>]" value="<?= /* @noEscape */ (int)($block->getAddToCartQty($item) * 1) ?>">
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php if ($product->isSaleable() && $stockQty > 0): ?>
+    <div class="product-item-actions">
+        <div class="actions-primary">
+            <button type="button" data-role="tocart" data-post='<?= /* @noEscape */ $block->getItemAddToCartParams($item) ?>' title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>" data-item-id="<?= $block->escapeHtmlAttr($item->getId()) ?>" class="action tocart primary">
+                <span><?= $block->escapeHtml(__('Add to Cart')) ?></span>
+            </button>
+        </div>
+    </div>
+    <?php else: ?>
+        <?php if ($product->getIsSalable() && $stockQty > 0): ?>
+            <p class="available stock" title="<?= $block->escapeHtmlAttr(__('Availability')) ?>">
+                <span><?= $block->escapeHtml(__('In stock')) ?></span>
+            </p>
+        <?php elseif($stockQty <= 0 && $attrPreorderValue == 'Yes' && $availdate > $cdate): ?>
+            <div class="product-item-actions">
+                <div class="actions-primary">
+                    <button type="button" data-role="tocart" data-post='<?= /* @noEscape */ $block->getItemAddToCartParams($item) ?>' title="<?= /* @escapeNotVerified */ __('Pre Order') ?>" data-item-id="<?= $block->escapeHtmlAttr($item->getId()) ?>" class="action tocart primary">
+                        <span><?= /* @escapeNotVerified */ __('Pre Order') ?></span>
+                    </button>
+                </div>
+            </div>      
+        <?php else: ?>
+            <p class="unavailable stock" title="<?= $block->escapeHtmlAttr(__('Availability')) ?>">
+                <span><?= $block->escapeHtml(__('Out of stock')) ?></span>
+            </p>
+        <?php endif; ?>
+    <?php endif; ?>
+    </fieldset>
+</div>

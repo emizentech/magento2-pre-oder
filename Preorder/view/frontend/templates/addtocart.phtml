@@ -1,0 +1,116 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+?>
+<?php $_product = $block->getProduct(); ?>
+<?php $buttonTitle = __('Add to Cart'); 
+//$preorder = $this->getProduct()->getAttributeText('preorder');
+$_getPreorder = $_product->getResource()->getAttribute('preorder');
+$preorder = $_getPreorder->getFrontend()->getValue($_product);
+
+/**Get preorder and current date*/
+$_ct= new Zend_Date($_product->getavailability_date()); 
+$currentDate = (new \DateTime());
+$cdate = strtotime($currentDate->format('Y-m-d'));
+$availdate = strtotime($_ct->toString('Y-MM-dd'));
+/****/
+
+/**Get Product Quantity*/
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$StockState = $objectManager->get('\Magento\CatalogInventory\Api\StockStateInterface');
+$stockQty = $StockState->getStockQty($_product->getId(), $_product->getStore()->getWebsiteId());
+/***/
+
+/**Get Preorder Percentage**/
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$perPreorder=  $objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('preorder/general/preorder_percent');
+/****/
+?>
+<?php if ($_product->isSaleable() && $stockQty > 0): ?>
+<div class="box-tocart">
+    <div class="fieldset">
+        <?php if ($block->shouldRenderQuantity()): ?>
+        <div class="field qty">
+            <label class="label" for="qty"><span><?= /* @escapeNotVerified */ __('Qty') ?></span></label>
+            <div class="control">
+                <input type="number"
+                       name="qty"
+                       id="qty"
+                       value="<?= /* @escapeNotVerified */ $block->getProductDefaultQty() * 1 ?>"
+                       title="<?= /* @escapeNotVerified */ __('Qty') ?>"
+                       class="input-text qty"
+                       data-validate="<?= $block->escapeHtml(json_encode($block->getQuantityValidators())) ?>"
+                       />
+            </div>
+        </div>
+        <?php endif; ?>
+        <div class="actions">
+            <button type="submit"
+                    title="<?= /* @escapeNotVerified */ $buttonTitle ?>"
+                    class="action primary tocart"
+                    id="product-addtocart-button">
+                <span><?= /* @escapeNotVerified */ $buttonTitle ?></span>
+            </button>
+            <?= $block->getChildHtml('', true) ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if($stockQty <= 0 && $preorder == 'Yes' && $availdate > $cdate):
+$buttonTitle = __('Pre Order'); 
+
+?>
+<input type="hidden" value="<?php echo $preorder; ?>" name="isPreorder">
+
+<div class="product-availability">
+	<span class="preorder-notify"><b>Pay <?php echo $perPreorder; ?>% as preorder</b></span>
+</div>
+
+<div class="product-availability">
+  <span class="preorder-notify"><b><?= /* @escapeNotVerified */ __('Available') ?>: </b><?php echo $_ct->toString('dd MMMM, yyyy');  ?></span>
+</div>
+
+<div class="box-tocart">
+    <div class="fieldset">
+        <?php if ($block->shouldRenderQuantity()): ?>
+        <div class="field qty">
+            <label class="label" for="qty"><span><?= /* @escapeNotVerified */ __('Qty') ?></span></label>
+            <div class="control">
+                <input type="number"
+                       name="qty"
+                       id="qty"
+                       value="<?= /* @escapeNotVerified */ $block->getProductDefaultQty() * 1 ?>"
+                       title="<?= /* @escapeNotVerified */ __('Qty') ?>"
+                       class="input-text qty"
+                       data-validate="<?= $block->escapeHtml(json_encode($block->getQuantityValidators())) ?>"
+                       />
+            </div>
+        </div>
+        <?php endif; ?>
+        <div class="actions">
+            <button type="submit"
+                    title="<?= /* @escapeNotVerified */ $buttonTitle ?>"
+                    class="action primary tocart"
+                    id="product-addtocart-button">
+                <span><?= /* @escapeNotVerified */ $buttonTitle ?></span>
+            </button>
+            <?= $block->getChildHtml('', true) ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "Magento_Catalog/js/validate-product": {}
+        }
+    }
+</script>

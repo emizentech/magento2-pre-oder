@@ -1,0 +1,16 @@
+{
+  "name": "emizentech/module-preorderpartialpayment",
+  "description": "N/A",
+  "type": "magento2-module",
+  "version": "1.0.0",
+  "require": {
+    "php": "~5.5.22|~5.6.0|~7.0.0",
+    "magento/framework": "100.0.*",
+    "emizentech/module-preorder": "1.0.*"
+  },
+  "autoload": {
+    "files": [
+      "registration.php"
+    ]
+  }
+}

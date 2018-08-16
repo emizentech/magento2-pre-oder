@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="checkout_onepage_controller_success_action">
+        <observer name="after_checkout_save_order" instance="Emizentech\PreorderPartialPayment\Observer\AfterCheckoutSaveOrder" />
+    </event>
+    <event name="sales_quote_collect_totals_before">
+        <observer name="custom_sales_quote_collect_totals_before" instance="Emizentech\PreorderPartialPayment\Observer\SalesQuoteCollectTotalsBefore" />
+    </event>
+</config>

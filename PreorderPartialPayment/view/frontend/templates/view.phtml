@@ -1,0 +1,8 @@
+<?php
+$orderId = $this->getRequest()->getParam('order_id');
+$blockObj= $block->getLayout()->createBlock('Emizentech\PreorderPartialPayment\Block\Order');
+
+if($blockObj->completeOrder($orderId)):
+?>
+<a href="/preorder/sales/cart/order_id/<?php echo $orderId; ?>"><span class="order-status">Complete Payment</span></a>
+<?php endif; ?>

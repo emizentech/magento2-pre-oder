@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="styles"/>
+    <body>
+    	<referenceContainer name="js">
+    		<block class="Magento\Backend\Block\Template" template="Magento_Config::system:config/js.phtml"/>
+    	</referenceContainer>
+
+    	<referenceContainer name="page.main.actions">
+    		<block class="Magento\Backend\Block\Store\Switcher" name="adminhtml.system.config.switcher" template="Magento_Backend::store/switcher.phtml">
+    			<arguments>
+    				<argument name="switch_websites" xsi:type="string">1</argument>
+    				<argument name="switch_store_groups" xsi:type="string">0</argument>
+    				<argument name="switch_store_views" xsi:type="string">1</argument>
+    				<argument name="default_selection_name" xsi:type="string">1</argument>
+    				<argument name="show_manage_stores_link" xsi:type="string">1</argument>
+    			</arguments>
+    		</block>
+    	</referenceContainer>
+
+    	<referenceContainer name="left">
+    		<block name="preorder.index.configuration.tabs" class="Emizentech\PreorderPartialPayment\Block\Adminhtml\Index\Configuration\Tabs" />
+    	</referenceContainer>
+
+        <referenceContainer name="content">
+        	<block name="preorder.index.configuration.form" class="Emizentech\PreorderPartialPayment\Block\Adminhtml\Index\Configuration\Edit" />
+        </referenceContainer>
+    </body>
+</page>

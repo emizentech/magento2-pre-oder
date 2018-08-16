@@ -1,0 +1,15 @@
+.product-availability{
+	padding: 10px;
+	background: #ACDDEC;
+	margin-bottom: 10px;
+	border-radius: 3px;
+	border: 1px #2FAAD0 solid;
+}
+.preorder-notify{
+	color: #278CAA
+}
+.preorder-minicart-notify{
+	color: #278CAA;
+	font-size: 13px;
+	font-weight: 700;
+}

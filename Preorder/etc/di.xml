@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<preference for="Magento\Catalog\Block\Product\ListProduct" type="Emizentech\Preorder\Block\ListProduct" />
+	<type name="Magento\Checkout\CustomerData\AbstractItem">
+        <plugin name="AddAttPlug" type="Emizentech\Preorder\Plugin\DefaultItem" disabled="false" sortOrder="10"/>
+    </type>
+    <type name="Magento\Checkout\Model\DefaultConfigProvider">
+        <plugin name="checkout-summary-product-attribute" type="Emizentech\Preorder\Plugin\Checkout\Model\DefaultConfigProvider" />
+    </type>
+</config>
